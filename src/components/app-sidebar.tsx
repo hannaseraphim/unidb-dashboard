@@ -1,11 +1,8 @@
 import {
   Archive,
   Blocks,
-  BookA,
   BookUser,
   CircleUser,
-  Group,
-  GroupIcon,
   LogOut,
   NotebookText,
   ScrollText,
@@ -26,17 +23,75 @@ import {
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { Button } from "./ui/button";
+import { useEffect, useState, type JSX } from "react";
+
+type MenuItem = {
+  to: string;
+  label: string;
+  icon: JSX.Element;
+  permissions: string[];
+};
 
 export const AppSidebar = () => {
   const navigate = useNavigate();
-  const menuItems = [
-    { to: "/users", label: "Usuários", icon: <Users /> },
-    { to: "/courses", label: "Cursos", icon: <Archive /> },
-    { to: "/classes", label: "Turmas", icon: <BookUser /> },
-    { to: "/materials", label: "Materiais", icon: <Blocks /> },
-    { to: "/activities", label: "Atividades", icon: <NotebookText /> },
-    { to: "/history", label: "Histórico", icon: <ScrollText /> },
+  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>([]);
+
+  const menuItems: MenuItem[] = [
+    {
+      to: "/users",
+      label: "Usuários",
+      icon: <Users />,
+      permissions: ["ADMIN"],
+    },
+    {
+      to: "/courses",
+      label: "Cursos",
+      icon: <Archive />,
+      permissions: ["ADMIN", "TEACHER", "STUDENT"],
+    },
+    {
+      to: "/classes",
+      label: "Turmas",
+      icon: <BookUser />,
+      permissions: ["ADMIN", "TEACHER", "STUDENT"],
+    },
+    {
+      to: "/materials",
+      label: "Materiais",
+      icon: <Blocks />,
+      permissions: ["ADMIN", "TEACHER", "STUDENT"],
+    },
+    {
+      to: "/activities",
+      label: "Atividades",
+      icon: <NotebookText />,
+      permissions: ["ADMIN", "TEACHER", "STUDENT"],
+    },
+    {
+      to: "/history",
+      label: "Histórico",
+      icon: <ScrollText />,
+      permissions: ["ADMIN", "TEACHER", "STUDENT"],
+    },
   ];
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const res = await axios.get("http://localhost:8080/api/me", {
+        withCredentials: true,
+      });
+
+      const userProfiles = res.data.profiles;
+
+      const allowedMenu = menuItems.filter((item) =>
+        item.permissions.some((role) => userProfiles.includes(role))
+      );
+
+      setFilteredMenu(allowedMenu);
+    }
+
+    fetchUserInfo();
+  }, []);
 
   const Logout = async () => {
     await axios.get("http://localhost:8080/auth/logout", {
@@ -59,7 +114,7 @@ export const AppSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {filteredMenu.map((item) => (
                 <SidebarMenuItem key={item.to}>
                   <SidebarMenuButton
                     asChild

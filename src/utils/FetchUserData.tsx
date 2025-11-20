@@ -5,7 +5,7 @@ export const FetchUserData = async () => {
     const res = await axios.get("http://localhost:8080/api/me", {
       withCredentials: true,
     });
-    return res;
+    return res.data;
   } catch (err) {
     console.log(err);
   }

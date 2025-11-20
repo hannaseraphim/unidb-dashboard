@@ -118,7 +118,10 @@ export function Login() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full bg-indigo-500">
+            <Button
+              type="submit"
+              className="w-full hover:bg-indigo-500 cursor-pointer"
+            >
               Login
             </Button>
           </form>

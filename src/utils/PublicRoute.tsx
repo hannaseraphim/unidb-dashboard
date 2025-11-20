@@ -11,7 +11,7 @@ export const PublicRoute = ({ children }: { children: ReactNode }) => {
       try {
         const res = await FetchUserData();
 
-        if (res?.data) {
+        if (res) {
           setLoggedIn(true);
         } else {
           setLoggedIn(false);
