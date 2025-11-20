@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
+import { Navigate } from "react-router";
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [activeMessage, setActiveMessage] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   const showMessage = (msg: string) => {
     setMessage(msg);
@@ -34,8 +36,13 @@ export function Login() {
         { email, password },
         { withCredentials: true }
       );
+
+      setRedirect(true);
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (!err.response) {
+          showMessage("Ocorreu um erro interno, tente novamente mais tarde");
+        }
         switch (err.response!.status) {
           case 404:
             showMessage("Usuário não encontrado");
@@ -50,6 +57,7 @@ export function Login() {
 
   return (
     <div className="flex items-center justify-center h-screen">
+      {redirect && <Navigate to="/" />}
       <div
         className={`max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700 absolute ${
           activeMessage ? "top-2" : "-top-20"
