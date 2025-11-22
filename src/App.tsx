@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { PublicRoute } from "./utils/PublicRoute";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import { Home } from "./pages/Home";
+import { Me } from "./pages/Me";
 
 function App() {
   return (
@@ -24,7 +25,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/me"
+          element={
+            <ProtectedRoute>
+              <Me />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+      
     </BrowserRouter>
   );
 }
