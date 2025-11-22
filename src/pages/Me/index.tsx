@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { io } from "socket.io-client";
-import { useEffect, useState, type ReactElement, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { FetchUserData } from "@/utils/FetchUserData";
 import {
   Card,
