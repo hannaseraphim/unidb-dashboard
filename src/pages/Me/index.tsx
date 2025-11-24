@@ -41,7 +41,7 @@ export const Me = () => {
       setPrevEmail(res.email);
       setNewName(res.name);
       setNewEmail(res.email);
-      setUserProfiles(res.profiles);
+      setUserProfiles(res.profiles.map((p) => p.name));
 
       socket.on("class:full", (data) => {
         console.log("Turma cheia:", data);
@@ -52,10 +52,6 @@ export const Me = () => {
     }
     fetchUser();
   }, []);
-
-  useEffect(() => {
-    console.log(userProfiles);
-  }, [userProfiles]);
 
   function handleUpdate(e: any) {
     e.preventDefault();
