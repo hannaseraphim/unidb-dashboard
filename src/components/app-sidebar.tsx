@@ -81,7 +81,7 @@ export const AppSidebar = () => {
         withCredentials: true,
       });
 
-      const userProfiles = res.data.profiles;
+      const userProfiles = res.data.profiles.map((p) => p.name);
 
       const allowedMenu = menuItems.filter((item) =>
         item.permissions.some((role) => userProfiles.includes(role))
