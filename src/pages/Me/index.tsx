@@ -16,6 +16,11 @@ import axios from "axios";
 import { Badge } from "@/components/ui/badge";
 import { useQuickMessage } from "@/components/quickmessage";
 
+type Profile = {
+  id: number;
+  name: string;
+};
+
 const profileColors: Record<string, string> = {
   ADMIN: "bg-red-500",
   TEACHER: "bg-blue-500",
@@ -41,7 +46,7 @@ export const Me = () => {
       setPrevEmail(res.email);
       setNewName(res.name);
       setNewEmail(res.email);
-      setUserProfiles(res.profiles.map((p) => p.name));
+      setUserProfiles(res.profiles.map((p: Profile) => p.name));
 
       socket.on("class:full", (data) => {
         console.log("Turma cheia:", data);
