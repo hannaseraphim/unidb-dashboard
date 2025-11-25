@@ -61,6 +61,7 @@ export const Users = () => {
         const res = await axios.get<User[]>("http://localhost:8080/api/users", {
           withCredentials: true,
         });
+        console.log(res.data);
         setUsers(res.data);
       } catch (error) {
         console.error(error);
@@ -83,7 +84,6 @@ export const Users = () => {
     if (!selectedUser) return;
 
     try {
-      // Cria um objeto para envio, convertendo os perfis para IDs
       const payload = {
         ...selectedUser,
         profiles: selectedUser.profiles.map((profile) => profileIds[profile]),
@@ -91,7 +91,11 @@ export const Users = () => {
 
       await axios.put(
         `http://localhost:8080/api/users/${selectedUser.id}`,
-        payload,
+        {
+          name: payload.name,
+          email: payload.email,
+          profiles: payload.profiles,
+        },
         { withCredentials: true }
       );
 
@@ -105,6 +109,27 @@ export const Users = () => {
       console.error(error);
       showMessage("Erro ao atualizar o usuário.");
     }
+  };
+
+  const handleCheckboxChange = (profile: string, checked: boolean) => {
+    if (!selectedUser) return;
+
+    let updatedProfiles = [...selectedUser.profiles];
+
+    if (checked) {
+      if (!updatedProfiles.includes(profile)) {
+        updatedProfiles.unshift(profile);
+      }
+    } else {
+      if (updatedProfiles.length > 1) {
+        updatedProfiles = updatedProfiles.filter((p) => p !== profile);
+      } else {
+        showMessage("O usuário deve ter pelo menos 1 perfil.");
+        return;
+      }
+    }
+
+    setSelectedUser({ ...selectedUser, profiles: updatedProfiles });
   };
 
   return (
@@ -147,7 +172,44 @@ export const Users = () => {
                   placeholder="newemail"
                 />
                 <Label htmlFor="newprofiles">Perfis</Label>
-                <div className="flex flex-col gap-2"></div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="checkbox"
+                      className="w-4"
+                      id="admin"
+                      checked={selectedUser.profiles.includes("ADMIN")}
+                      onChange={(e) =>
+                        handleCheckboxChange("ADMIN", e.target.checked)
+                      }
+                    />
+                    <Label htmlFor="admin">Administrador</Label>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="checkbox"
+                      className="w-4"
+                      id="teacher"
+                      checked={selectedUser.profiles.includes("TEACHER")}
+                      onChange={(e) =>
+                        handleCheckboxChange("TEACHER", e.target.checked)
+                      }
+                    />
+                    <Label htmlFor="teacher">Professor</Label>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="checkbox"
+                      className="w-4"
+                      id="student"
+                      checked={selectedUser.profiles.includes("STUDENT")}
+                      onChange={(e) =>
+                        handleCheckboxChange("STUDENT", e.target.checked)
+                      }
+                    />
+                    <Label htmlFor="student">Aluno</Label>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -161,6 +223,8 @@ export const Users = () => {
             </div>
           </Dialog.Content>
         </Dialog.Root>
+
+        {/* Content */}
         <div className="w-full p-5">
           <div className="search-bar flex items-center relative">
             <Input
@@ -176,21 +240,28 @@ export const Users = () => {
             {filtered.length}
           </p>
 
+          {/* Users list */}
           {filtered.map((user) => (
             <div key={user.id}>
               <Card className="m-2 flex flex-row justify-between items-center cursor-pointer scale-99 hover:scale-100 transition-all">
-                <CardContent>
+                <CardContent className="flex flex-col gap-1">
                   <p className="text-gray-400">ID: {user.id}</p>
                   <h1>{user.name}</h1>
                   <CardDescription>{user.email}</CardDescription>
-                  {user.profiles.map((profile, index) => (
-                    <Badge
-                      key={index}
-                      className={`${profileColors[profile] || "bg-indigo-500"}`}
-                    >
-                      {profile}
-                    </Badge>
-                  ))}
+
+                  {/* User profiles */}
+                  <div className="flex gap-1">
+                    {user.profiles.map((profile, index) => (
+                      <Badge
+                        key={index}
+                        className={`${
+                          profileColors[profile] || "bg-indigo-500"
+                        }`}
+                      >
+                        {profile}
+                      </Badge>
+                    ))}
+                  </div>
                 </CardContent>
 
                 <CardContent className="flex gap-5">
