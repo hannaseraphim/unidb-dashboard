@@ -58,9 +58,9 @@ export const Me = () => {
     fetchUser();
   }, []);
 
-  function handleUpdate(e: any) {
+  function handleUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (newName == prevName && newEmail == prevEmail) {
+    if (newName == prevName && newEmail == prevEmail && !newPassword) {
       showMessage("Nada a ser atualizado");
       return;
     }
@@ -76,7 +76,10 @@ export const Me = () => {
       )
       .then((res) => {
         console.log(res);
-        window.location.reload();
+        showMessage("Perfil atualizado!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       });
   }
 
