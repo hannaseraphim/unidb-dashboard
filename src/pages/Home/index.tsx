@@ -21,7 +21,7 @@ export const Home = () => {
       });
     }
     fetchUser();
-  }, []);
+  }, [socket]);
   return (
     <SidebarProvider className="flex">
       <AppSidebar />
