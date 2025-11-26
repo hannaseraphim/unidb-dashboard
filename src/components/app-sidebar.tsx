@@ -23,7 +23,7 @@ import {
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { Button } from "./ui/button";
-import { useEffect, useState, type JSX } from "react";
+import { useEffect, useState, useMemo, type JSX } from "react";
 
 type MenuItem = {
   to: string;
@@ -36,44 +36,47 @@ export const AppSidebar = () => {
   const navigate = useNavigate();
   const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>([]);
 
-  const menuItems: MenuItem[] = [
-    {
-      to: "/users",
-      label: "Usuários",
-      icon: <Users />,
-      permissions: ["ADMIN"],
-    },
-    {
-      to: "/courses",
-      label: "Cursos",
-      icon: <Archive />,
-      permissions: ["ADMIN", "TEACHER", "STUDENT"],
-    },
-    {
-      to: "/classes",
-      label: "Turmas",
-      icon: <BookUser />,
-      permissions: ["ADMIN", "TEACHER", "STUDENT"],
-    },
-    {
-      to: "/materials",
-      label: "Materiais",
-      icon: <Blocks />,
-      permissions: ["ADMIN", "TEACHER", "STUDENT"],
-    },
-    {
-      to: "/activities",
-      label: "Atividades",
-      icon: <NotebookText />,
-      permissions: ["ADMIN", "TEACHER", "STUDENT"],
-    },
-    {
-      to: "/history",
-      label: "Histórico",
-      icon: <ScrollText />,
-      permissions: ["ADMIN", "TEACHER", "STUDENT"],
-    },
-  ];
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        to: "/users",
+        label: "Usuários",
+        icon: <Users />,
+        permissions: ["Administrador"],
+      },
+      {
+        to: "/courses",
+        label: "Cursos",
+        icon: <Archive />,
+        permissions: ["Administrador", "Professor", "Aluno"],
+      },
+      {
+        to: "/classes",
+        label: "Turmas",
+        icon: <BookUser />,
+        permissions: ["Administrador", "Professor", "Aluno"],
+      },
+      {
+        to: "/materials",
+        label: "Materiais",
+        icon: <Blocks />,
+        permissions: ["Administrador", "Professor", "Aluno"],
+      },
+      {
+        to: "/activities",
+        label: "Atividades",
+        icon: <NotebookText />,
+        permissions: ["Administrador", "Professor", "Aluno"],
+      },
+      {
+        to: "/history",
+        label: "Histórico",
+        icon: <ScrollText />,
+        permissions: ["Administrador", "Professor", "Aluno"],
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -81,7 +84,9 @@ export const AppSidebar = () => {
         withCredentials: true,
       });
 
-      const userProfiles = res.data.profiles.map((p) => p.name);
+      const userProfiles = res.data.profiles.map(
+        (p: { name: string }) => p.name
+      );
 
       const allowedMenu = menuItems.filter((item) =>
         item.permissions.some((role) => userProfiles.includes(role))
@@ -91,7 +96,7 @@ export const AppSidebar = () => {
     }
 
     fetchUserInfo();
-  }, []);
+  }, [menuItems]);
 
   const Logout = async () => {
     await axios.get("http://localhost:8080/auth/logout", {
