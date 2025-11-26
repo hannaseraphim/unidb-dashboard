@@ -22,9 +22,9 @@ type Profile = {
 };
 
 const profileColors: Record<string, string> = {
-  ADMIN: "bg-red-500",
-  TEACHER: "bg-blue-500",
-  STUDENT: "bg-indigo-500",
+  Administrador: "bg-red-500",
+  Professor: "bg-blue-500",
+  Aluno: "bg-indigo-500",
 };
 
 export const Me = () => {
