@@ -20,7 +20,6 @@ import {
 import {
   DialogClose,
   DialogDescription,
-  DialogOverlay,
   DialogTitle,
 } from "@radix-ui/react-dialog";
 
