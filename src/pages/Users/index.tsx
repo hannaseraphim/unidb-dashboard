@@ -8,13 +8,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaUsers, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router";
-
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useQuickMessage } from "@/components/quickmessage";
 // 🔧 Cores para badges
 const profileColors: Record<string, string> = {
   Administrador: "bg-red-500",
   Professor: "bg-blue-500",
   Aluno: "bg-indigo-500",
 };
+
+// Perfils disponíveis
+const availableProfiles: Profile[] = [
+  { id: 1, name: "Administrador" },
+  { id: 2, name: "Professor" },
+  { id: 3, name: "Aluno" },
+];
 
 // Interface do perfil
 interface Profile {
@@ -47,6 +64,64 @@ export const Users = () => {
     );
   });
 
+  // ➕ Criação de usuário
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    profiles: [] as number[],
+  });
+  const [formMessage, setFormMessage] = useState("");
+  const [formOpen, setFormOpen] = useState(false);
+  const { Toast, showMessage } = useQuickMessage();
+
+  function handleCheckboxChange(profileId: number, checked: boolean) {
+    setFormData((prev) => {
+      let updatedProfiles = [...prev.profiles];
+
+      if (checked) {
+        updatedProfiles = Array.from(new Set([...updatedProfiles, profileId]));
+      } else {
+        updatedProfiles = updatedProfiles.filter((id) => id !== profileId);
+      }
+
+      return { ...prev, profiles: updatedProfiles };
+    });
+  }
+
+  async function handleCreateUser(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (formData.profiles.length === 0) {
+      setFormMessage("Selecione pelo menos um perfil");
+      return;
+    }
+
+    try {
+      await axios
+        .post("http://localhost:8080/api/users", formData, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          setFormOpen(false);
+          showMessage(
+            "Usuário criado, a página será atualizada automaticamente em 5 segundos"
+          );
+          setTimeout(() => window.location.reload(), 5000);
+          console.log(res.status);
+        })
+        .catch((err) => {
+          if (err.status === 409) setFormMessage("Email em uso");
+          setTimeout(() => setFormMessage(""), 3000);
+          console.log(err);
+        });
+      return;
+    } catch (error) {
+      console.log(error);
+      setFormMessage("Ocorreu um erro interno, tente novamente outra hora");
+    }
+  }
+
   // 🔧 Carregar usuários
   useEffect(() => {
     const fetchUsers = async () => {
@@ -72,6 +147,7 @@ export const Users = () => {
       <AppSidebar />
       <main className="p-2 w-full">
         <SidebarTrigger />
+        {Toast}
 
         {/* Content */}
         <div className="w-full p-5">
@@ -85,9 +161,123 @@ export const Users = () => {
           </div>
 
           <div className="flex justify-between text-indigo-500 w-full p-5 font-bold items-center gap-2">
-            <Button className="hover:bg-indigo-500 cursor-pointer">
-              Criar usuário
-            </Button>
+            {/* Modal de criação de usuário */}
+            <Dialog open={formOpen} onOpenChange={setFormOpen}>
+              {/* Botão que abre o modal */}
+              <DialogTrigger asChild>
+                <Button className="bg-indigo-500 cursor-pointer">
+                  Criar usuário
+                </Button>
+              </DialogTrigger>
+
+              {/* Conteúdo do modal */}
+              <DialogContent className="w-110">
+                <DialogHeader>
+                  <DialogTitle className="text-indigo-500 font-bold">
+                    Criar um usuário
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="">
+                  <form
+                    className="flex flex-col gap-5"
+                    onSubmit={(e) => handleCreateUser(e)}
+                  >
+                    <div className="flex flex-col gap-2">
+                      <Label
+                        htmlFor="name"
+                        className="font-bold text-indigo-500"
+                      >
+                        Nome:
+                      </Label>
+                      <Input
+                        id="name"
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label
+                        htmlFor="email"
+                        className="font-bold text-indigo-500"
+                      >
+                        Email:
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label
+                        htmlFor="password"
+                        className="font-bold text-indigo-500"
+                      >
+                        Senha:
+                      </Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) =>
+                          setFormData({ ...formData, password: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold text-indigo-500">
+                        Perfis:
+                      </Label>
+                      {availableProfiles.map((profile) => (
+                        <div
+                          key={profile.id}
+                          className="flex items-center gap-2"
+                        >
+                          <Input
+                            type="checkbox"
+                            id={`profile-${profile.id}`}
+                            className="w-4"
+                            checked={formData.profiles.includes(profile.id)}
+                            onChange={(e) =>
+                              handleCheckboxChange(profile.id, e.target.checked)
+                            }
+                          />
+                          <Label htmlFor={`profile-${profile.id}`}>
+                            {profile.name}
+                          </Label>
+                        </div>
+                      ))}
+                      {formMessage && (
+                        <h1 className="flex w-full justify-center text-red-700">
+                          * {formMessage} *
+                        </h1>
+                      )}
+                      <Button
+                        className="bg-indigo-500 text-white cursor-pointer"
+                        type="submit"
+                      >
+                        Confirmar
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancelar</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <div className="flex items-center gap-2">
               <FaUsers />
               {filtered.length}
