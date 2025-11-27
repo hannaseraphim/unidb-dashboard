@@ -85,7 +85,7 @@ export const AppSidebar = () => {
       });
 
       const userProfiles = res.data.profiles.map(
-        (p: { name: string }) => p.name
+        (p: { name: string }) => p
       );
 
       const allowedMenu = menuItems.filter((item) =>
