@@ -13,7 +13,7 @@ export const useQuickMessage = () => {
   const Toast = (
     <div
       className={`max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700 fixed ${
-        activeMessage ? "top-2" : "-top-20"
+        activeMessage ? "top-2" : "-top-100"
       } transition-all right-1 m-5 z-45`}
       role="alert"
       tabIndex={-1}
