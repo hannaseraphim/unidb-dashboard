@@ -410,7 +410,10 @@ export const User = () => {
                           <Button variant="outline">Cancelar</Button>
                         </DialogClose>
 
-                        <Button className="bg-red-500 text-white cursor-pointer">
+                        <Button
+                          className="bg-red-500 text-white cursor-pointer"
+                          onClick={() => handleDeleteUser()}
+                        >
                           Confirmar
                         </Button>
                       </DialogFooter>
