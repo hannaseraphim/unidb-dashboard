@@ -46,7 +46,7 @@ export const Me = () => {
       setPrevEmail(res.email);
       setNewName(res.name);
       setNewEmail(res.email);
-      setUserProfiles(res.profiles.map((p: Profile) => p.name));
+      setUserProfiles(res.profiles.map((p: Profile) => p));
 
       socket.on("class:full", (data) => {
         console.log("Turma cheia:", data);
