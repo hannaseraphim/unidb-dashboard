@@ -6,6 +6,8 @@ import { Home } from "./pages/Home";
 import { Me } from "./pages/Me";
 import { Users } from "./pages/Users";
 import { User } from "./pages/User";
+import { Courses } from "./pages/Courses";
+import { CourseId } from "./pages/Course";
 
 function App() {
   return (
@@ -48,6 +50,22 @@ function App() {
           element={
             <ProtectedRoute>
               <User />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/courses"
+          element={
+            <ProtectedRoute>
+              <Courses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/courses/:id"
+          element={
+            <ProtectedRoute>
+              <CourseId />
             </ProtectedRoute>
           }
         />
