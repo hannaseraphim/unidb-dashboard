@@ -124,28 +124,34 @@ const UserField = ({
   </div>
 );
 
-const UserClasses = ({ classesDetails }: { classesDetails: ClassDetail[] }) => (
-  <div className="flex mt-5 flex-col items-center justify-center">
-    <h1 className="text-2xl font-bold text-indigo-500">Turmas</h1>
-    <div className="flex flex-wrap w-full justify-center">
-      {classesDetails.length ? (
-        classesDetails.map((c) => (
-          <Card
-            key={c.id}
-            className="w-100 m-5 cursor-pointer hover:scale-102 transition-all"
-          >
-            <CardContent>
-              <h1 className="text-indigo-500 font-bold">{c.name}</h1>
-              <p>Quantidade de alunos: {c.student_count}</p>
-            </CardContent>
-          </Card>
-        ))
-      ) : (
-        <h1 className="text-gray-400 p-2">Não há turmas para esse usuário.</h1>
-      )}
+const UserClasses = ({ classesDetails }: { classesDetails: ClassDetail[] }) => {
+  const navigate = useNavigate();
+  return (
+    <div className="flex mt-5 flex-col items-center justify-center">
+      <h1 className="text-2xl font-bold text-indigo-500">Turmas</h1>
+      <div className="flex flex-wrap w-full justify-center">
+        {classesDetails.length ? (
+          classesDetails.map((c) => (
+            <Card
+              key={c.id}
+              className="w-100 m-5 cursor-pointer hover:scale-102 transition-all"
+              onClick={() => navigate(`/classes/${c.id}`)}
+            >
+              <CardContent>
+                <h1 className="text-indigo-500 font-bold">{c.name}</h1>
+                <p>Quantidade de alunos: {c.student_count}</p>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <h1 className="text-gray-400 p-2">
+            Não há turmas para esse usuário.
+          </h1>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const UserGrades = ({ grades }: { grades: Grade[] }) => (
   <div className="flex mt-5 flex-col items-center justify-center">

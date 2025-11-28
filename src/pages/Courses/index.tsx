@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FaSearch, FaBook } from "react-icons/fa"; // ícone de curso
+import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import {
   Dialog,
@@ -21,6 +21,7 @@ import { useQuickMessage } from "@/components/quickmessage";
 import { Badge } from "@/components/ui/badge";
 
 import type { Course } from "@/interfaces";
+import { Archive } from "lucide-react";
 
 export const Courses = () => {
   const navigate = useNavigate();
@@ -56,13 +57,12 @@ export const Courses = () => {
         .post("http://localhost:8080/api/courses", formData, {
           withCredentials: true,
         })
-        .then((res) => {
+        .then(() => {
           setFormOpen(false);
           showMessage(
             "Curso criado, a página será atualizada automaticamente em 5 segundos"
           );
           setTimeout(() => window.location.reload(), 5000);
-          console.log(res.status);
         })
         .catch((err) => {
           if (err.status === 409) setFormMessage("Curso já existe");
@@ -215,7 +215,7 @@ export const Courses = () => {
               </DialogContent>
             </Dialog>
             <div className="flex items-center gap-2">
-              <FaBook />
+              <Archive size={16} />
               {filtered.length}
             </div>
           </div>
