@@ -8,6 +8,8 @@ import { Users } from "./pages/Users";
 import { User } from "./pages/User";
 import { Courses } from "./pages/Courses";
 import { CourseId } from "./pages/Course";
+import { Classes } from "./pages/Classes";
+import { ClassId } from "./pages/ClassId";
 
 function App() {
   return (
@@ -66,6 +68,22 @@ function App() {
           element={
             <ProtectedRoute>
               <CourseId />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/classes"
+          element={
+            <ProtectedRoute>
+              <Classes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/classes/:id"
+          element={
+            <ProtectedRoute>
+              <ClassId />
             </ProtectedRoute>
           }
         />
