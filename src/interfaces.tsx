@@ -32,17 +32,23 @@ export interface Class {
   students?: Student[];
 }
 
-// Interface do perfil
 export interface Profile {
   id: number;
   name: string;
 }
 
-// Interface do usuário
 export interface User {
   id?: number;
   name: string;
   email: string;
   profiles: Profile[];
   password?: string;
+}
+
+export interface Material {
+  id: number;
+  id_class: number;
+  title: string;
+  description: string;
+  posted_at: string;
 }

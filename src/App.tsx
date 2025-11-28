@@ -10,6 +10,8 @@ import { Courses } from "./pages/Courses";
 import { CourseId } from "./pages/Course";
 import { Classes } from "./pages/Classes";
 import { ClassId } from "./pages/ClassId";
+import { Materials } from "./pages/Materials";
+import { MaterialId } from "./pages/Material";
 
 function App() {
   return (
@@ -84,6 +86,22 @@ function App() {
           element={
             <ProtectedRoute>
               <ClassId />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/materials"
+          element={
+            <ProtectedRoute>
+              <Materials />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/materials/:id"
+          element={
+            <ProtectedRoute>
+              <MaterialId />
             </ProtectedRoute>
           }
         />
