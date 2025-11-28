@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useQuickMessage } from "@/components/quickmessage";
+import type { Profile, User } from "@/interfaces";
 // 🔧 Cores para badges
 const profileColors: Record<string, string> = {
   Administrador: "bg-red-500",
@@ -32,21 +33,6 @@ const availableProfiles: Profile[] = [
   { id: 2, name: "Professor" },
   { id: 3, name: "Aluno" },
 ];
-
-// Interface do perfil
-interface Profile {
-  id: number;
-  name: string;
-}
-
-// Interface do usuário
-interface User {
-  id?: number;
-  name: string;
-  email: string;
-  profiles: Profile[]; // agora é um array de objetos
-  password?: string;
-}
 
 export const Users = () => {
   const navigate = useNavigate();
