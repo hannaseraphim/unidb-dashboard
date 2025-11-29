@@ -399,7 +399,9 @@ export const ClassId = () => {
             {/* Turmas */}
             <div className="flex justify-center">
               <div className="flex flex-col w-full items-center mt-5">
-                <h1 className="text-2xl font-bold text-indigo-500">Alunos</h1>
+                <h1 className="text-2xl font-bold text-indigo-500">
+                  Alunos: {cls.student_count}
+                </h1>
                 <div className="flex flex-wrap m-5 gap-5 justify-center items-center">
                   {cls.students?.map((std, key) => (
                     <Card

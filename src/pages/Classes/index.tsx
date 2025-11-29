@@ -133,6 +133,8 @@ export const Classes = () => {
   // pega a data atual no formato YYYY-MM-DD
   const today = new Date().toISOString().split("T")[0];
 
+  console.log(classes);
+
   return (
     <SidebarProvider className="flex z-50">
       <AppSidebar />
@@ -369,16 +371,23 @@ export const Classes = () => {
           {filtered.map((cls) => (
             <div key={cls.id}>
               <Card
-                className="m-2 flex flex-row justify-between items-center cursor-pointer scale-99 hover:scale-100 transition-all"
+                className={`m-2 flex flex-row justify-between items-center cursor-pointer scale-99 hover:scale-100 transition-all ${
+                  cls.archived ? "bg-gray-200" : ""
+                }`}
                 onClick={() => handleClassDetails(cls.id!)}
               >
                 <CardContent className="flex flex-col gap-1">
                   <p className="text-gray-400">ID: {cls.id}</p>
                   <h1>{cls.name}</h1>
                   <CardDescription>{cls.period}</CardDescription>
-                  <Badge className="bg-blue-500">
-                    Professor: {cls.teacher!.name}
-                  </Badge>
+                  <div className="flex gap-1">
+                    <Badge className="bg-blue-500">
+                      Professor: {cls.teacher!.name}
+                    </Badge>
+                    <Badge className="bg-blue-500">
+                      Quantidade de alunos: {cls.student_count}
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
             </div>

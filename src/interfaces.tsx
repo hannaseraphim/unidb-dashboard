@@ -24,6 +24,7 @@ export interface Class {
   ends_on: string;
   archived: boolean;
   max_students: number;
+  student_count?: number;
   teacher?: {
     id: number;
     name?: string;
@@ -42,7 +43,16 @@ export interface User {
   name: string;
   email: string;
   profiles: Profile[];
+  enrolments: Enrolment[];
   password?: string;
+}
+
+export interface Enrolment {
+  id_student?: number;
+  id_class?: number;
+  class_name?: string;
+  enrolled_at?: string;
+  active?: number;
 }
 
 export interface Material {
