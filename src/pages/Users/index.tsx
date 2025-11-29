@@ -296,6 +296,13 @@ export const Users = () => {
                           {profile.name}
                         </Badge>
                       ))}
+                    {user.enrolments.length ? (
+                      <Badge className="bg-indigo-500">
+                        Turmas: {user.enrolments.length}
+                      </Badge>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </CardContent>
               </Card>
