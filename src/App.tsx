@@ -1,110 +1,62 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { Login } from "./pages/Login";
-import { BrowserRouter, Routes, Route } from "react-router";
-import { PublicRoute } from "./utils/PublicRoute";
-import { ProtectedRoute } from "./utils/ProtectedRoute";
-import { Home } from "./pages/Home";
-import { Me } from "./pages/Me";
-import { Users } from "./pages/Users";
-import { User } from "./pages/User";
-import { Courses } from "./pages/Courses";
-import { CourseId } from "./pages/Course";
-import { Classes } from "./pages/Classes";
-import { ClassId } from "./pages/ClassId";
-import { Materials } from "./pages/Materials";
-import { MaterialId } from "./pages/Material";
+import { ProfileSelector } from "./pages/ProfileSelector";
+import { Admin } from "./pages/Admin/";
+import { Users } from "./pages/Admin/Users";
+import { Courses } from "./pages/Admin/Courses";
+import {
+  ProtectedRoute,
+  PublicRoute,
+  Restricted,
+} from "./utils/Authentication";
+import { Classes } from "./pages/Admin/Classes";
+import { Aluno } from "./pages/Aluno";
+import { StudentClasses } from "./pages/Aluno/Classes";
+import { Activity } from "./pages/Aluno/Activities";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/me"
-          element={
-            <ProtectedRoute>
-              <Me />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/users"
-          element={
-            <ProtectedRoute>
-              <Users />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/users/:id"
-          element={
-            <ProtectedRoute>
-              <User />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/courses"
-          element={
-            <ProtectedRoute>
-              <Courses />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/courses/:id"
-          element={
-            <ProtectedRoute>
-              <CourseId />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/classes"
-          element={
-            <ProtectedRoute>
-              <Classes />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/classes/:id"
-          element={
-            <ProtectedRoute>
-              <ClassId />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/materials"
-          element={
-            <ProtectedRoute>
-              <Materials />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/materials/:id"
-          element={
-            <ProtectedRoute>
-              <MaterialId />
-            </ProtectedRoute>
-          }
-        />
+        {/* Rota geral */}
+        <Route path="*" element={<Navigate to="/profile-selector" replace />} />
+
+        {/* Rota de autenticação */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
+
+        {/* Rota de seleção de perfis */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile-selector" element={<ProfileSelector />} />
+        </Route>
+
+        {/* Rotas de administrador */}
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/admin/"
+            element={<Restricted permission="Administrador" />}
+          >
+            {/* rota índice: quando acessa /admin/ sem nada depois */}
+            <Route index element={<Navigate to="home" replace />} />
+
+            <Route path="home" element={<Admin />} />
+            <Route path="users" element={<Users />} />
+            <Route path="courses" element={<Courses />} />
+            <Route path="classes" element={<Classes />} />
+          </Route>
+        </Route>
+
+        {/* Rotas de aluno */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/aluno/" element={<Restricted permission="Aluno" />}>
+            {/* rota índice: quando acessa /aluno/ sem nada depois */}
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<Aluno />} />
+            <Route path="classes" element={<StudentClasses />} />
+            <Route path="activities" element={<Activity />} />
+          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );
