@@ -82,8 +82,8 @@ export const Activity = () => {
                 const isOverdue = activity.due_date.split("T")[0] < now;
 
                 return (
-                  <div className="">
-                    <Card className="w-full bg-gray-900" key={activity.id}>
+                  <div className="" key={activity.id}>
+                    <Card className="w-full bg-gray-900">
                       <div className="flex justify-between items-center">
                         <CardContent className="text-xl text-emerald-400 flex flex-col gap-1">
                           <h1>{activity.title}</h1>
@@ -92,8 +92,8 @@ export const Activity = () => {
                           </CardDescription>
                           <Badge
                             className={`${
-                              isOverdue ? "text-gray-700" : "text-white"
-                            } bg-emerald-300`}
+                              isOverdue ? "text-red-500" : "text-white"
+                            } bg-emerald-900`}
                           >
                             {activity.due_date.split("T")[0]}
                           </Badge>
@@ -107,8 +107,10 @@ export const Activity = () => {
                         <CardContent className="flex flex-col gap-1">
                           <Button
                             className={`${
-                              isOverdue ? "bg-gray-700" : "bg-emerald-500"
-                            } cursor-pointer`}
+                              isOverdue
+                                ? "bg-gray-700"
+                                : "bg-emerald-500 cursor-pointer"
+                            } `}
                             disabled={isOverdue}
                           >
                             Realizar atividade
