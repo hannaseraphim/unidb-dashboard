@@ -13,6 +13,7 @@ import { Classes } from "./pages/Admin/Classes";
 import { Aluno } from "./pages/Aluno";
 import { StudentClasses } from "./pages/Aluno/Classes";
 import { Activity } from "./pages/Aluno/Activities";
+import { Grades } from "./pages/Aluno/Grades";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
             <Route path="home" element={<Aluno />} />
             <Route path="classes" element={<StudentClasses />} />
             <Route path="activities" element={<Activity />} />
+            <Route path="grades" element={<Grades />} />
           </Route>
         </Route>
       </Routes>
