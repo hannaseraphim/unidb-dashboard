@@ -7,7 +7,6 @@ import axios from "axios";
 import { ApiURL } from "@/utils/api";
 import { Badge } from "@/components/ui/badge";
 import { HiUsers } from "react-icons/hi2";
-import { Button } from "@/components/ui/button";
 
 type Class = {
   id: number;
@@ -104,11 +103,6 @@ export const StudentClasses = () => {
                       <p className="text-sm">{cls.student_count}</p>
                       <HiUsers size={15}></HiUsers>
                     </div>
-                  </CardContent>
-                  <CardContent className="flex flex-col gap-1">
-                    <Button className="bg-emerald-500 cursor-pointer">
-                      Minhas atividades
-                    </Button>
                   </CardContent>
                 </div>
               </Card>
