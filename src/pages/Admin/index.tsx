@@ -108,7 +108,9 @@ export const Admin = () => {
                       Quantidade de alunos ativos
                     </h1>
                     <h1 className="text-2xl text-white">
-                      {studentsQuantity || "Carregando..."}
+                      {studentsQuantity
+                        ? studentsQuantity
+                        : "Nenhum usuário carregado..."}
                     </h1>
                   </CardTitle>
                 </CardContent>
