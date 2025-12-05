@@ -18,7 +18,7 @@ export const useQuickMessage = () => {
 
   useEffect(() => {
     if (!activeMessage) return;
-    const timer = setTimeout(() => setActiveMessage(false), 3000);
+    const timer = setTimeout(() => setActiveMessage(false), 5000);
     return () => clearTimeout(timer);
   }, [activeMessage]);
 

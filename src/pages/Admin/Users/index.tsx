@@ -232,6 +232,7 @@ export const Users = () => {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
+                    <TableHead className="text-emerald-400">ID</TableHead>
                     <TableHead className="text-emerald-400">Nome</TableHead>
                     <TableHead className="text-emerald-400">Email</TableHead>
                     <TableHead className="text-emerald-400">Perfis</TableHead>
@@ -244,6 +245,8 @@ export const Users = () => {
                         key={u.id}
                         className="text-white hover:bg-gray-700"
                       >
+                        <TableCell>{u.id}</TableCell>
+
                         <TableCell>
                           {editingUserId === u.id ? (
                             <input

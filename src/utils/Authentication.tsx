@@ -17,7 +17,7 @@ export const ProtectedRoute = () => {
         });
         setIsAuthenticated(response.status === 200 ? true : false);
       } catch (error) {
-        console.error("Authentication check failed:", error);
+        console.error(error);
         setIsAuthenticated(false);
       }
     };
@@ -48,7 +48,7 @@ export const PublicRoute = () => {
         });
         setIsAuthenticated(response.status === 200 ? true : false);
       } catch (error) {
-        console.error("Authentication check failed:", error);
+        console.error(error);
         setIsAuthenticated(false);
       }
     };
@@ -82,7 +82,7 @@ export const Restricted = ({ permission }: { permission: AllowedProfiles }) => {
 
         setHasPermission(userProfiles.includes(permission));
       } catch (error) {
-        console.error("Permission check failed:", error);
+        console.error(error);
         setHasPermission(false);
       }
     };

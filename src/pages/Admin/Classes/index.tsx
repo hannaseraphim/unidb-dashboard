@@ -255,6 +255,7 @@ export const Classes = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="text-emerald-400">ID</TableHead>
                     <TableHead className="text-emerald-400">Nome</TableHead>
                     <TableHead className="text-emerald-400">Início</TableHead>
                     <TableHead className="text-emerald-400">Fim</TableHead>
@@ -279,6 +280,9 @@ export const Classes = () => {
                       key={cls.id}
                       className="text-white hover:bg-gray-700"
                     >
+                      {/* ID */}
+                      <TableCell>{cls.id}</TableCell>
+
                       {/* Nome */}
                       <TableCell className="w-70">
                         {editingClassId === cls.id ? (

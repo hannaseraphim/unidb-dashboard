@@ -202,6 +202,7 @@ export const Courses = () => {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
+                    <TableHead className="text-emerald-400">ID</TableHead>
                     <TableHead className="text-emerald-400">Nome</TableHead>
                     <TableHead className="text-emerald-400">
                       Descrição
@@ -215,6 +216,7 @@ export const Courses = () => {
                 <TableBody className="text-white">
                   {filteredCourses.map((course) => (
                     <TableRow key={course.id} className="hover:bg-gray-700">
+                      <TableCell>{course.id}</TableCell>
                       <TableCell>
                         {editingCourseId === course.id ? (
                           <input

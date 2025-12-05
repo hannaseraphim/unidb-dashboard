@@ -11,8 +11,11 @@ import { Label } from "@/components/ui/label";
 import { useQuickMessage } from "@/hooks/useQuickMessage";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export const Login = () => {
+  const navigate = useNavigate();
+
   // Notificação rápida
   const { Toast, showMessage } = useQuickMessage();
 
@@ -29,11 +32,13 @@ export const Login = () => {
     }
 
     try {
-      await axios.post(
-        "http://localhost:8080/auth/login",
-        { email, password },
-        { withCredentials: true }
-      );
+      await axios
+        .post(
+          "http://localhost:8080/auth/login",
+          { email, password },
+          { withCredentials: true }
+        )
+        .then(() => navigate("/profile-selector"));
     } catch (error) {
       console.log(error);
       if (axios.isAxiosError(error) && error.response) {

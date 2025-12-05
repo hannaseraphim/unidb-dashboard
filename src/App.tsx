@@ -14,8 +14,18 @@ import { Aluno } from "./pages/Aluno";
 import { StudentClasses } from "./pages/Aluno/Classes";
 import { Activity } from "./pages/Aluno/Activities";
 import { Grades } from "./pages/Aluno/Grades";
+import { Professor } from "./pages/Professor";
+import { AvailableClasses } from "./pages/Aluno/Enrolment";
+import { useEffect } from "react";
+import { socket } from "./hooks/useSocket";
 
 function App() {
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Conectado ao servidor");
+    });
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -53,10 +63,23 @@ function App() {
           <Route path="/aluno/" element={<Restricted permission="Aluno" />}>
             {/* rota índice: quando acessa /aluno/ sem nada depois */}
             <Route index element={<Navigate to="home" replace />} />
+            <Route path="enroll" element={<AvailableClasses />} />
             <Route path="home" element={<Aluno />} />
             <Route path="classes" element={<StudentClasses />} />
             <Route path="activities" element={<Activity />} />
             <Route path="grades" element={<Grades />} />
+          </Route>
+        </Route>
+
+        {/* Rotas de professor */}
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/professor/"
+            element={<Restricted permission="Professor" />}
+          >
+            {/* rota índice: quando acessa /professor/ sem nada depois */}
+            <Route index element={<Navigate to="home" replace />} />
+            <Route path="home" element={<Professor />} />
           </Route>
         </Route>
       </Routes>
