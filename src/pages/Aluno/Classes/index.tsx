@@ -127,7 +127,7 @@ export const StudentClasses = () => {
           id="content"
           className="w-full flex items-center justify-center"
         >
-          <div className="container w-full flex flex-col items-center justify-center gap-4">
+          <div className="container w-full flex flex-col items-center justify-center gap-4 mr-5 ml-5">
             <Card className="w-full bg-gray-800">
               <CardContent className="overflow-auto max-h-160">
                 <Table>

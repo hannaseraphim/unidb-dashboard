@@ -18,6 +18,7 @@ import { Professor } from "./pages/Professor";
 import { AvailableClasses } from "./pages/Aluno/Enrolment";
 import { useEffect } from "react";
 import { socket } from "./hooks/useSocket";
+import { Materials } from "./pages/Aluno/Materials";
 
 function App() {
   useEffect(() => {
@@ -63,6 +64,7 @@ function App() {
           <Route path="/aluno/" element={<Restricted permission="Aluno" />}>
             {/* rota índice: quando acessa /aluno/ sem nada depois */}
             <Route index element={<Navigate to="home" replace />} />
+            <Route path="materials" element={<Materials />}></Route>
             <Route path="enroll" element={<AvailableClasses />} />
             <Route path="home" element={<Aluno />} />
             <Route path="classes" element={<StudentClasses />} />

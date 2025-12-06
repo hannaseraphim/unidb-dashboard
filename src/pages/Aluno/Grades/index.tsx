@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AppSidebar } from "@/components/SideBar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,17 +15,42 @@ import {
 import { getUserData, type PersonalUser } from "@/hooks/getUserData";
 import { useEffect, useState } from "react";
 
+// Tipo para grade já no formato retornado
+type Grade = {
+  activityId: number;
+  activityTitle: string;
+  grade: string;
+};
+
 export const Grades = () => {
   const [user, setUser] = useState<PersonalUser | null>(null);
-  const [classList, setClassList] = useState<Class[]>([]);
-  const [filteredClasses, setFilteredClasses] = useState<Class[]>([]);
+  const [grades, setGrades] = useState<Grade[]>([]);
+  const [filteredGrades, setFilteredGrades] = useState<Grade[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
-    getUserData().then(setUser);
+    getUserData().then((data) => {
+      setUser(data);
+      // supondo que data.grades seja o array de notas
+      if (data?.grades) {
+        setGrades(data.grades);
+        setFilteredGrades(data.grades);
+      }
+    });
   }, []);
 
-  console.log(user);
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    setFilteredGrades(
+      grades.filter(
+        (g) =>
+          g.activityTitle.toLowerCase().includes(query) ||
+          g.grade.toLowerCase().includes(query)
+      )
+    );
+  };
 
   return (
     <SidebarProvider>
@@ -36,7 +62,7 @@ export const Grades = () => {
           <div className="w-full m-5">
             <div className="flex flex-col start">
               <p className="text-2xl text-emerald-400 font-bold">
-                Minhas turmas
+                Minhas notas
               </p>
             </div>
           </div>
@@ -46,7 +72,7 @@ export const Grades = () => {
           <Card className="bg-gray-800">
             <CardContent>
               <Input
-                placeholder="Buscar turmas"
+                placeholder="Buscar por atividade ou nota"
                 value={searchQuery}
                 onChange={handleSearch}
                 className="bg-gray-700 text-white"
@@ -55,78 +81,38 @@ export const Grades = () => {
           </Card>
         </section>
 
+        {/* Tabela de Notas */}
         <section
-          id="content"
+          id="grades"
           className="w-full flex items-center justify-center"
         >
-          <div className="container w-full flex flex-col items-center justify-center gap-4">
+          <div className="container w-full flex flex-col items-center justify-center gap-4 mr-5 ml-5">
             <Card className="w-full bg-gray-800">
               <CardContent className="overflow-auto max-h-160">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-emerald-400">ID</TableHead>
-                      <TableHead className="text-emerald-400">Nome</TableHead>
-                      <TableHead className="text-emerald-400">Início</TableHead>
-                      <TableHead className="text-emerald-400">Fim</TableHead>
-                      <TableHead className="text-emerald-400">
-                        Período
-                      </TableHead>
-                      <TableHead className="text-emerald-400">
-                        Máx. de Alunos
-                      </TableHead>
-                      <TableHead className="text-emerald-400">
-                        Alunos atuais
-                      </TableHead>
-                      <TableHead className="text-emerald-400">
-                        Professor
-                      </TableHead>
                       <TableHead className="text-emerald-400">
                         Atividade
                       </TableHead>
+                      <TableHead className="text-emerald-400">Nota</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredClasses.map((cls) => (
+                    {filteredGrades.map((g) => (
                       <TableRow
-                        key={cls.id}
+                        key={g.activityId}
                         className="text-white hover:bg-gray-700"
                       >
-                        {/* ID */}
-                        <TableCell>{cls.id}</TableCell>
-
-                        {/* Nome */}
-                        <TableCell className="w-70">{cls.name}</TableCell>
-
-                        {/* Início */}
-                        <TableCell>{cls.starts_on.split("T")[0]}</TableCell>
-
-                        {/* Fim */}
-                        <TableCell>{cls.ends_on.split("T")[0]}</TableCell>
-
-                        {/* Período */}
-                        <TableCell className="w-70">{cls.period}</TableCell>
-
-                        {/* Máx. de alunos */}
-                        <TableCell>{cls.max_students}</TableCell>
-
-                        {/* Quantidade de alunos */}
-                        <TableCell>{cls.student_count}</TableCell>
-
-                        {/* Professor */}
-                        <TableCell className="w-70">
-                          {cls.teacher?.name}
-                        </TableCell>
-
-                        {/* Estado da turma */}
+                        <TableCell>{g.activityTitle}</TableCell>
                         <TableCell>
-                          {cls.archived === 1 ? (
-                            <Badge variant="destructive">Arquivada</Badge>
-                          ) : (
-                            <Badge variant="default" className="bg-emerald-400">
-                              Ativa
-                            </Badge>
-                          )}
+                          <Badge
+                            className={
+                              Number(g.grade) > 5 ? "bg-blue-500" : "bg-red-500"
+                            }
+                          >
+                            {g.grade}
+                          </Badge>
                         </TableCell>
                       </TableRow>
                     ))}

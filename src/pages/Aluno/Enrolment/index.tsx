@@ -91,7 +91,7 @@ export const AvailableClasses = () => {
           id="content"
           className="w-full flex items-center justify-center"
         >
-          <div className="container w-full flex flex-col items-center justify-center gap-4">
+          <div className="container w-full flex flex-col items-center justify-center gap-4 ml-5 mr-5">
             {classes.length === 0 ? (
               <p className="text-white text-center">
                 Nenhuma turma disponível.

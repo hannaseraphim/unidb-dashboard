@@ -2,20 +2,13 @@ import { AppSidebar } from "@/components/SideBar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { getUserData, type PersonalUser } from "@/hooks/getUserData";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
 import { ApiURL } from "@/utils/api";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CreateSubmissionModal } from "../components/CreateSubmissionModal";
 
 type Activity = {
   id: number;
@@ -27,10 +20,20 @@ type Activity = {
   due_date: string;
 };
 
+type Submission = {
+  id_student: string;
+  id_activity: number;
+  submitted_at: string;
+  content: string;
+};
+
 export const Activity = () => {
   const [user, setUser] = useState<PersonalUser | null>(null);
-  const [classList, setClassList] = useState<Activity[]>([]);
-  const [filteredClasses, setFilteredClasses] = useState<Activity[]>([]);
+  const [activitiesByClass, setActivitiesByClass] = useState<Activity[][]>([]);
+  const [filteredActivitiesByClass, setFilteredActivitiesByClass] = useState<
+    Activity[][]
+  >([]);
+  const [userSubmissions, setUserSubmissions] = useState<Submission[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
@@ -42,39 +45,52 @@ export const Activity = () => {
       if (user) {
         try {
           const requests = user.enrolments.map((enrolment) =>
-            axios.get<Activity>(
+            axios.get<Activity[]>(
               `${ApiURL}/api/activities/${enrolment.classId}`,
-              {
-                withCredentials: true,
-              }
+              { withCredentials: true }
             )
           );
 
           const responses = await Promise.all(requests);
           const classesData = responses.map((response) => response.data);
-          setClassList(classesData);
-          setFilteredClasses(classesData);
+
+          setActivitiesByClass(classesData);
+          setFilteredActivitiesByClass(classesData);
         } catch (error) {
           console.log(error);
         }
       }
     };
 
+    const fetchMySubmissions = async () => {
+      if (user) {
+        const submissions = await axios.get<Submission[]>(
+          `${ApiURL}/api/submissions/${user.id}`,
+          { withCredentials: true }
+        );
+
+        setUserSubmissions(submissions.data);
+      }
+    };
+
+    fetchMySubmissions();
     fetchMyActivities();
   }, [user]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
+    const query = e.target.value.toLowerCase();
     setSearchQuery(query);
 
-    const results = classList?.filter(
-      (act) =>
-        act.id.toString() ||
-        act.title.toLowerCase() ||
-        act.description.toLowerCase() ||
-        act.type.toLowerCase()
+    const results = activitiesByClass.map((activities) =>
+      activities.filter(
+        (act) =>
+          act.title.toLowerCase().includes(query) ||
+          act.description.toLowerCase().includes(query) ||
+          act.type.toLowerCase().includes(query)
+      )
     );
-    setFilteredClasses(results);
+
+    setFilteredActivitiesByClass(results);
   };
 
   const today = new Date().toISOString().split("T")[0];
@@ -85,6 +101,7 @@ export const Activity = () => {
       <main className="w-full bg-gray-800 flex flex-col items-center justify-start gap-3 p-5">
         <SidebarTrigger className="hidden" />
 
+        {/* Header */}
         <section id="header" className="w-full">
           <div className="w-full m-5">
             <div className="flex flex-col start">
@@ -95,11 +112,12 @@ export const Activity = () => {
           </div>
         </section>
 
+        {/* Search */}
         <section id="search-bar" className="w-full pl-5 pr-5">
           <Card className="bg-gray-800">
             <CardContent>
               <Input
-                placeholder="Buscar turmas"
+                placeholder="Buscar atividades"
                 value={searchQuery}
                 onChange={handleSearch}
                 className="bg-gray-700 text-white"
@@ -108,88 +126,97 @@ export const Activity = () => {
           </Card>
         </section>
 
+        {/* Conteúdo */}
         <section
           id="content"
-          className="w-full flex items-center justify-center"
+          className="w-full flex flex-col items-center justify-center gap-4"
         >
-          <div className="container w-full flex flex-col items-center justify-center gap-4">
-            <Card className="w-full bg-gray-800">
-              <CardContent className="overflow-auto max-h-160">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-emerald-400">
-                        ID da Atividade
-                      </TableHead>
-                      <TableHead className="text-emerald-400">
-                        ID da Turma
-                      </TableHead>
-                      <TableHead className="text-emerald-400">Título</TableHead>
-                      <TableHead className="text-emerald-400">
-                        Descrição
-                      </TableHead>
-                      <TableHead className="text-emerald-400">
-                        Expira em
-                      </TableHead>
-                      <TableHead className="text-emerald-400">Tipo</TableHead>
-                      <TableHead className="text-emerald-400">
-                        Nota máxima
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredClasses.map((act) => (
-                      <TableRow
+          {filteredActivitiesByClass.map((activities) => {
+            if (activities.length === 0) return null;
+
+            const classId = activities[0].id_class;
+            const className = user?.enrolments.find(
+              (e) => e.classId === classId
+            )?.className;
+            const courseName = user?.enrolments.find(
+              (e) => e.classId === classId
+            )?.courseName;
+
+            return (
+              <Card key={classId} className="w-[83.5em] bg-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-emerald-400">
+                    {className} — {courseName}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                  {activities.map((act) => {
+                    const alreadySubmitted = userSubmissions.some(
+                      (s) =>
+                        s.id_activity === act.id && s.id_student === user?.id
+                    );
+
+                    const alreadyHasGrade = user?.grades.some(
+                      (g) => g.activityId === act.id
+                    );
+
+                    const expired = act.due_date.split("T")[0] < today;
+                    return (
+                      <Card
                         key={act.id}
-                        className="text-white hover:bg-gray-700"
+                        className="bg-gray-800 border border-gray-600 flex items-center flex-row justify-between"
                       >
-                        {/* ID da atividade */}
-                        <TableCell>{act.id}</TableCell>
+                        <CardContent>
+                          <CardHeader>
+                            <CardTitle className="text-white">
+                              {act.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="flex flex-col gap-2 text-gray-300">
+                            <p>{act.description}</p>
+                            <div className="flex gap-2 flex-wrap">
+                              <Badge className="bg-blue-500">{act.type}</Badge>
+                              <Badge className="bg-purple-500">
+                                Nota Máx: {act.max_grade}
+                              </Badge>
+                              <Badge
+                                className={
+                                  expired ? "bg-red-500" : "bg-emerald-600"
+                                }
+                              >
+                                Prazo: {act.due_date.split("T")[0]}
+                              </Badge>
+                            </div>
+                          </CardContent>
+                        </CardContent>
 
-                        {/* ID da turma */}
-                        <TableCell>{act.id_class}</TableCell>
-
-                        {/* Título da atividade */}
-                        <TableCell>{act.title}</TableCell>
-
-                        {/* Descrição da atividade */}
-                        <TableCell>{act.description}</TableCell>
-
-                        {/* Data de expiração */}
-                        <TableCell
-                          className={
-                            act.due_date < today
-                              ? "text-red-500"
-                              : "text-emerald-400"
-                          }
-                        >
-                          {act.due_date.split("T")[0]}
-                        </TableCell>
-
-                        {/* Tipo da atividade */}
-                        <TableCell>
-                          <Badge className="bg-emerald-600">{act.type}</Badge>
-                        </TableCell>
-
-                        {/* Nota máxima da atividade */}
-                        <TableCell>{act.max_grade}</TableCell>
-
-                        {/* Realizar atividade */}
-                        <TableCell>
-                          <Button
-                            className="cursor-pointer bg-emerald-800"
-                            disabled={act.due_date < today}
-                          >
-                            Realizar atividade
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </div>
+                        <CardContent>
+                          <CreateSubmissionModal
+                            trigger={
+                              <Button
+                                className="bg-emerald-700 cursor-pointer"
+                                disabled={
+                                  expired || alreadySubmitted || alreadyHasGrade
+                                }
+                              >
+                                Realizar atividade
+                              </Button>
+                            }
+                            activity={{
+                              id: act.id,
+                              title: act.title,
+                              classId: act.id_class,
+                            }}
+                            userId={user!.id}
+                          />
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            );
+          })}
         </section>
       </main>
     </SidebarProvider>
