@@ -19,6 +19,7 @@ import { AvailableClasses } from "./pages/Aluno/Enrolment";
 import { useEffect } from "react";
 import { socket } from "./hooks/useSocket";
 import { Materials } from "./pages/Aluno/Materials";
+import { TeacherClasses } from "./pages/Professor/Classes";
 
 function App() {
   useEffect(() => {
@@ -81,6 +82,7 @@ function App() {
           >
             {/* rota índice: quando acessa /professor/ sem nada depois */}
             <Route index element={<Navigate to="home" replace />} />
+            <Route path="classes" element={<TeacherClasses />} />
             <Route path="home" element={<Professor />} />
           </Route>
         </Route>

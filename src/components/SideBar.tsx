@@ -40,8 +40,8 @@ const sidebarConfig: Record<string, SidebarItem[]> = {
   Professor: [
     { label: "Minhas Turmas", path: "/professor/classes", icon: BookOpen },
     { label: "Atividades", path: "/professor/activities", icon: Home },
-    { label: "Materiais", path: "/aluno/materials", icon: Book },
-    { label: "Notas", path: "/aluno/grades", icon: Home },
+    { label: "Materiais", path: "/professor/materials", icon: Book },
+    { label: "Notas", path: "/professor/grades", icon: Home },
   ],
   Aluno: [
     { label: "Matricular", path: "/aluno/enroll", icon: GraduationCap },
